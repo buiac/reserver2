@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>
+    Reservr Settings
+  </title>
+  
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+  
+  <script src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="bower_components/moment/min/moment.min.js"></script> 
+  <script src="bower_components/fullcalendar/dist/fullcalendar.js"></script>
+  <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="bower_components/ejs/ejs.js"></script>
+
+  <link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.css">
+  
+  <link rel="stylesheet" href="style/app.css">
+  <script src="scripts/app.js"></script>
+</head>
+<body>
+
+  <nav class="navbar navbar-inverse navbar-static-top">
+    
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          
+          <div class="navbar-header">
+            
+            <a href="/dashboard" class="navbar-brand">
+              <span class="logo"></span>
+            </a>
+
+          </div> <!-- navbar-header -->
+
+          <div class="dropdown pull-right">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+              <%= user.username %>
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="/settings"><i class="fa fa-cog"></i> Settings</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="/signout"> <i class="fa fa-power-off"></i> Log out</a></li>
+            </ul>
+          </div>
+
+          
+
+        </div> <!-- col -->
+      </div> <!-- row -->
+    </div> <!-- container-fluid -->
+  </nav>
+  
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-6 col-md-offset-4">
+        <h2>Account info</h2>
+
+        <div class="row">
+          
+          <div class="col-md-10">
+            
+            <form action="/settings" method="POST">
+              <div class="form-group">
+                <label for="" class="control-label">Full Name</label>
+                <input type="text" name="name" id="" class="form-control"value="<%= user.name %>">
+              </div>
+
+              <div class="form-group">
+                <label for="" class="control-label">Company Name</label>
+                <input type="text" name="companyName" id="" class="form-control" value="<%= user.companyName %>">
+              </div>
+
+              <div class="form-group">
+                <label for="" class="control-label">Username/Email</label>
+                <input type="text" name="userName" id="" class="form-control" value="<%= user.username %>">
+              </div>
+
+              <div class="form-group">
+                <label for="" class="control-label">Message template</label>
+                <textarea class="form-control" name="template" id="" cols="30" rows="4"><%= user.template %></textarea>
+              </div>
+
+              <input type="hidden" name="_id" value="<%= user._id %>">
+
+              <button href="" class="btn btn-primary" type="submit">Update Account</button>
+
+            </form>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- BEGIN JIVOSITE CODE {literal} -->
+  <script type='text/javascript'>
+  (function(){ var widget_id = 'CrZt9f212R';
+  var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = '//code.jivosite.com/script/widget/'+widget_id; var ss = document.getElementsByTagName('script')[0]; ss.parentNode.insertBefore(s, ss);})();</script>
+  <!-- {/literal} END JIVOSITE CODE -->
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-2294103-9', 'auto');
+  ga('send', 'pageview');
+
+</script>
+</body>
+</html>
