@@ -11,7 +11,6 @@ module.exports = (function() {
   // validation library for whatever comes in through the forms
   var expressValidator = require('express-validator');
 
-
   //var async = require('async');
   var fs = require('fs');
 
@@ -22,6 +21,9 @@ module.exports = (function() {
   var flash = require('connect-flash');
   var passport = require('passport');
   var LocalStrategy = require('passport-local').Strategy;
+  var multer = require('multer');
+  var moment = require('moment');
+  var marked = require('marked');
 
   var app = express();
   
@@ -40,7 +42,7 @@ module.exports = (function() {
      if (req.isAuthenticated()){
         return next(); 
      } else {
-        res.redirect("/signin"); 
+        res.redirect("/"); 
      }
   };
 
@@ -55,6 +57,22 @@ module.exports = (function() {
   app.use(bodyParser.urlencoded({
     limit: '50mb',
     extended: true
+  }));
+
+  // globals in templates
+  app.use(function(req, res, next){
+    res.locals.moment = moment;
+    res.locals.marked = marked;
+    res.locals.JSON = JSON;
+    next();
+  });
+
+  // config file uploads folder
+  app.use(multer({
+    dest: config.dataDir + config.publicDir + '/media',
+    rename: function (fieldname, filename) {
+      return filename;
+    }
   }));
 
   app.use(expressValidator());
@@ -105,6 +123,7 @@ module.exports = (function() {
   app.get('/dashboard', isAuthenticated, events.redirectToEventUpdate);
   app.get('/dashboard/:orgId/events', isAuthenticated, events.listEventsView);
   app.get('/dashboard/:orgId/events/:eventId', isAuthenticated, events.updateEventView);
+  app.post('/dashboard/:orgId/event', isAuthenticated, events.updateEvent);
 
   // auth routes
   var auth = require('./app/controllers/authenticate.js')(config, db);
