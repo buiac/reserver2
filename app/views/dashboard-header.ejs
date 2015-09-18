@@ -8,16 +8,44 @@
   </title>
   
   <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
-  
-  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-    
-  <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-  
-  <script src="/bower_components/ejs/ejs.js"></script>
-
-
   <link rel="stylesheet" href="/bower_components/fontawesome/css/font-awesome.min.css">
-
+  <link rel="stylesheet" href="/bower_components/rome/dist/rome.min.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
 </head>
 <body>
+  <div class="header">
     <div class="container">
+      <div class="col-md-4">
+
+        <a href="/dashboard" class="logo">
+          <img src="/images/logo-white.png" class="logo-reservr">
+          <!-- <img src="/images/logo-reactor.png" class="logo-client"> -->
+        
+          <h2>
+            Dashboard
+          </h2>
+        </a>
+
+      </div>
+
+      <div class="col-md-8">
+
+        <a href="/dashboard/<%= orgId %>/event" class="btn-event-new" title="Adauga eveniment">
+          <i class="fa fa-plus"></i>
+        </a>
+
+        <!-- <h2>username: <%= user.username %> | valid email: <%= user.validEmail %></h2> -->
+        
+        <% if (user.validEmail) { %>
+          <ul>
+            <li><a href="/dashboard/<%= orgId %>/events">List events</a></li>
+            <li><a href="/dashboard/<%= orgId %>/settings">Settings</a></li>
+            <li><a href="/dashboard/<%= orgId %>/event">Create Event</a></li>
+          </ul>
+        <% } %>
+      </div>
+      
+    </div>
+  </div>
+  <div class="container">
+    

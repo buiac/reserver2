@@ -122,17 +122,20 @@ module.exports = (function() {
   // Backend routes
   app.get('/dashboard', isAuthenticated, events.redirectToEventUpdate);
   app.get('/dashboard/:orgId/events', isAuthenticated, events.listEventsView);
-  app.get('/dashboard/:orgId/events/:eventId', isAuthenticated, events.updateEventView);
+  app.get('/dashboard/:orgId/event/:eventId', isAuthenticated, events.updateEventView);
+  app.get('/dashboard/:orgId/event', isAuthenticated, events.updateEventView);
   app.post('/dashboard/:orgId/event', isAuthenticated, events.updateEvent);
+
+  // settings
+  var settings = require('./app/controllers/settings.js')(config, db);
+  app.get('/dashboard/:orgId/settings', isAuthenticated, settings.viewSettings);
 
   // auth routes
   var auth = require('./app/controllers/authenticate.js')(config, db);
 
   app.get('/signup', auth.signupView);
   
-  app.post('/createTempUser', auth.createTempUser, function (a, b, c) {
-
-  });
+  app.post('/createTempUser', auth.createTempUser);
 
   app.get('/signin', auth.signinView);
   app.post('/signin', auth.signin);

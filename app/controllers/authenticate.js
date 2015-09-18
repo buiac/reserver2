@@ -64,9 +64,6 @@ module.exports = function(config, db) {
           // set the user's local credentials
           newUser.username = username;
           newUser.password = createHash(password);
-
-          // set a default template
-          // newUser.template = 'Notification: you have an appointment starting at {time} with {full_name} from {company_name}.';
           
           // set calendar default name
           org.name = 'Guest';
