@@ -4,5 +4,14 @@ var validateEmail = function (email) {
 };
 
 $(document).ready(function () {
-  validateEmail()
+
+  $('body').on('click', '.event-images .event-image-thumb', function (e) {
+    
+    e.preventDefault();
+    $(this).parent().children().each(function (el) {
+      $(this).removeClass('active-image');
+    });
+    $(this).addClass('active-image');
+
+  })
 })

@@ -37,17 +37,20 @@ module.exports = (function() {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Chekcs if user is authenticated
-  var isAuthenticated = function (req,res,next){
-     if (req.isAuthenticated()){
-        return next(); 
-     } else {
-        res.redirect("/"); 
-     }
-  };
-
   // configs
   var config = require('./config/config.js');
+
+  // Chekcs if user is authenticated
+  var isAuthenticated = function (req,res,next){
+     
+    if (req.isAuthenticated()){
+      return next(); 
+    } else {
+      res.redirect("/"); 
+    }
+  };
+
+
 
   // config express
   app.use(bodyParser.json({
@@ -81,6 +84,7 @@ module.exports = (function() {
   app.set('view engine', 'ejs');
 
   app.use(express.static(__dirname + config.publicDir));
+  app.use(express.static(config.dataDir + config.publicDir));
 
   app.use(errorhandler());
 
@@ -118,6 +122,7 @@ module.exports = (function() {
 
   // events
   var events = require('./app/controllers/events.js')(config, db);
+  var reservations = require('./app/controllers/reservations.js')(config, db);
 
   // Backend routes
   app.get('/dashboard', isAuthenticated, events.redirectToEventUpdate);
@@ -130,6 +135,10 @@ module.exports = (function() {
   var settings = require('./app/controllers/settings.js')(config, db);
   app.get('/dashboard/:orgId/settings', isAuthenticated, settings.viewSettings);
 
+  // front end routes
+  app.get('/u/:orgName', events.listFrontEventsView);
+
+
   // auth routes
   var auth = require('./app/controllers/authenticate.js')(config, db);
 
@@ -141,7 +150,7 @@ module.exports = (function() {
   app.post('/signin', auth.signin);
 
   // Logout
-  app.get('/signout', function(req, res) {
+  app.get('/dashboard/signout', function(req, res) {
     req.logout();
     res.redirect('/signin');
   });

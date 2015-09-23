@@ -125,7 +125,6 @@ module.exports = function(config, db) {
       passReqToCallback : true
     },
     function (req, username, password, done) {
-      
       db.users.findOne({'username': username}, function (err, user) {
 
         if (err){

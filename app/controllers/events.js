@@ -47,6 +47,10 @@ module.exports = function(config, db) {
 
   var listEventsView = function (req, res, next) {
     
+    if (!req.user) {
+      res.redirect('/');
+    }
+
     var user = req.user;
     user.validEmail = validateEmail(user.username);
 
@@ -75,6 +79,39 @@ module.exports = function(config, db) {
     } else {
       res.redirect('/dashboard')
     }
+    
+  };
+
+  var listFrontEventsView = function (req, res, next) {
+      
+      db.orgs.findOne({
+        name: req.params.orgName
+      }, function (err, org) {
+      
+        if (err) {
+          res.send({ error: 'error'}, 400);
+        }
+
+        db.events.find({
+          orgId: org._id
+        }).sort({
+          date: -1
+        }).exec(function (err, events) {
+
+          if(err) {
+            return res.send(err, 400);
+          }
+
+          if (!events.length) {
+            events = [];
+          }
+
+          res.render('events-front', {
+            events: events
+          });
+
+        });
+      })
     
   };
 
@@ -279,7 +316,7 @@ module.exports = function(config, db) {
       req.checkBody('username', 'Username should not be empty').notEmpty();
       req.checkBody('org_name', 'Organization name should not be empty').notEmpty();
       req.checkBody('password', 'Password should not be empty').notEmpty();
-
+      
       if (errors) {
         
         res.render('event-update', {
@@ -301,10 +338,28 @@ module.exports = function(config, db) {
       user.username = username;
       user.validEmail = validateEmail(username);
 
-      // find user by id than update the username
-      db.users.update({
-        '_id': user._id
-      }, {$set: { username: user.username}}, function (err, num) {
+      var updateEvent = function (err, num) {
+        if (err) {
+         res.render('event-update', {errors: err, user: user, orgId: orgId});
+        }
+
+        res.redirect('/dashboard');
+      };
+
+      var updateOrg = function (err, num) {
+
+        if (err) {
+         res.render('event-update', {errors: err});
+        }
+
+        //find event by org id and update the event
+        db.events.update({
+          'orgId': orgId
+        }, theEvent, updateEvent)
+
+      };
+
+      var updateUser = function (err, num) {
         
         if (err) {
          res.render('event-update', {errors: err});
@@ -313,30 +368,14 @@ module.exports = function(config, db) {
          //find org by user id and update org name
         db.orgs.update({
           'userId': user._id
-        }, {$set: { name: user.username}}, function (err, num) {
+        }, {$set: { name: orgName}}, updateOrg)
 
-          if (err) {
-           res.render('event-update', {errors: err});
-          }
+      };
 
-
-          //find event by org id and update the event
-          db.events.update({
-            'orgId': orgId
-          }, theEvent, function (err, num) {
-
-            if (err) {
-             res.render('event-update', {errors: err, user: user, orgId: orgId});
-            }
-
-            res.redirect('/dashboard');
-
-
-          })
-
-        })
-
-      })
+      // find user by id than update the username
+      db.users.update({
+        '_id': user._id
+      }, {$set: { username: user.username}}, updateUser);
 
     }
 
@@ -378,7 +417,8 @@ module.exports = function(config, db) {
     redirectToEventsList: redirectToEventsList,
     redirectToEventUpdate: redirectToEventUpdate,
     updateEventView: updateEventView,
-    updateEvent: updateEvent
+    updateEvent: updateEvent,
+    listFrontEventsView: listFrontEventsView
   };
 
 };

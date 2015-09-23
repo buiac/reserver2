@@ -12,7 +12,7 @@ module.exports = function(config, db) {
   var passport = require('passport');
 
   var validateEmail = function (email) {
-    var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
   }
 
@@ -20,6 +20,13 @@ module.exports = function(config, db) {
     var user = req.user;
     user.validEmail = validateEmail(user.username);
     
+    console.log('\n\n\n\n')
+    console.log('--------')
+    console.log(user.validEmail)
+    console.log(user.username)
+    console.log('--------')
+    console.log('\n\n\n\n')
+
     if (user.validEmail) {
       res.render('settings', {
         errors: [],
