@@ -40,7 +40,7 @@
         <input type="hidden" name="eventId" class="reserve-id" value="<%= event._id %>">
         <input type="hidden" name="orgId" class="reserve-orgId" value="<%= org._id %>">
         
-        <% if (event.seats > 0) { %>
+         <% if ((event.seats - event.reservedSeats) > 0) {%>
           
           <input type="hidden" name="waiting" class="reserve-waiting" value="false">
 
@@ -76,7 +76,7 @@
   </div>
   
   <div class="col-md-4">
-      <% if ((event.seats - event.reservedSeats) >= 0) {%>
+      <% if ((event.seats - event.reservedSeats) > 0) {%>
       <span class="seats-left">
         <span id="seats-left">
           <%= event.seats - event.reservedSeats %>

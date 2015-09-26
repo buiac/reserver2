@@ -22,12 +22,14 @@ $(document).ready(function () {
     var mclistid = $this.find('.reserve-newsletter').val();
     var seatsLeft = parseInt($('#seats-left').html());
 
+    console.log(waiting);
+
     // send nothing if user does not check checkbox
     if (!$this.find('.reserve-newsletter')[0].checked) {
       mclistid = '';
     }
     
-    if (seats <= seatsLeft) {
+    if (seats <= seatsLeft || seatsLeft === 0 || waiting ) {
       $this.removeClass('container-reserve-form--success container-reserve-form--error');
       
       $this.addClass('container-reserve-form--loading');
