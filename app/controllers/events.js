@@ -14,13 +14,40 @@ module.exports = function(config, db) {
   var bCrypt = require('bcrypt-nodejs');
 
   moment.defaultFormat = 'YYYY-MM-DD LT';
+  moment.locale('ro');
 
   var validateEmail = function (email) {
     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
-  }
+  };
+
   var createHash = function(password){
     return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
+  };
+
+  var eventDeleteImage = function(req, res, next) {
+    
+    var eventId = req.params.eventId;
+    var pictureIndex = req.params.pictureIndex;
+    
+    db.events.findOne({
+      _id: eventId
+    }).exec(function (err, event) {
+
+      if(event.images && event.images.length) {
+        event.images.splice(pictureIndex, 1);
+      }
+        
+      db.events.update({
+        '_id': eventId
+      }, event, function (err, num, newEvent) {
+
+        res.redirect('/dashboard/' + req.params.orgId + '/event/' + eventId);
+
+      });
+
+    });
+    
   };
 
   var listEvents = function(req, res, next) {
@@ -83,13 +110,19 @@ module.exports = function(config, db) {
   };
 
   var listFrontEventsView = function (req, res, next) {
-      
+
       db.orgs.findOne({
         name: req.params.orgName
       }, function (err, org) {
-      
+        
         if (err) {
           res.send({ error: 'error'}, 400);
+          return
+        }
+
+        if (!org) {
+          res.redirect('/');
+          return
         }
 
         db.events.find({
@@ -107,7 +140,8 @@ module.exports = function(config, db) {
           }
 
           res.render('events-front', {
-            events: events
+            events: events,
+            org: org
           });
 
         });
@@ -205,6 +239,7 @@ module.exports = function(config, db) {
       seats: seats,
       location: location,
       activeImage: activeImage,
+      reservedSeats: 0,
       // mclistid: mclistid, // mailchimp list id
       orgId: orgId
     };
@@ -215,7 +250,6 @@ module.exports = function(config, db) {
       // for existing events,
       // if we don't add any new images, leave the old ones alone.
       if(req.body.existingImages) {
-        
 
         theEvent.images = JSON.parse(req.body.existingImages);
 
@@ -395,7 +429,7 @@ module.exports = function(config, db) {
       if (org) {
 
         db.events.findOne({orgId: org._id}, function (err, ev) {
-          
+
           if (!ev) {
             res.send({error: 'error'}, 400);
           }
@@ -418,7 +452,8 @@ module.exports = function(config, db) {
     redirectToEventUpdate: redirectToEventUpdate,
     updateEventView: updateEventView,
     updateEvent: updateEvent,
-    listFrontEventsView: listFrontEventsView
+    listFrontEventsView: listFrontEventsView,
+    eventDeleteImage: eventDeleteImage
   };
 
 };

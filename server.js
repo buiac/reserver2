@@ -119,10 +119,16 @@ module.exports = (function() {
     autoload: true
   });
 
+  db.reservations = new Datastore({
+    filename: config.dataDir + config.dbDir + '/reservations.db',
+    autoload: true
+  });
+
 
   // events
   var events = require('./app/controllers/events.js')(config, db);
   var reservations = require('./app/controllers/reservations.js')(config, db);
+  var settings = require('./app/controllers/settings.js')(config, db);
 
   // Backend routes
   app.get('/dashboard', isAuthenticated, events.redirectToEventUpdate);
@@ -130,10 +136,14 @@ module.exports = (function() {
   app.get('/dashboard/:orgId/event/:eventId', isAuthenticated, events.updateEventView);
   app.get('/dashboard/:orgId/event', isAuthenticated, events.updateEventView);
   app.post('/dashboard/:orgId/event', isAuthenticated, events.updateEvent);
+  app.get('/dashboard/:orgId/event/:eventId/deleteimage/:pictureIndex', isAuthenticated, events.eventDeleteImage);
 
   // settings
-  var settings = require('./app/controllers/settings.js')(config, db);
   app.get('/dashboard/:orgId/settings', isAuthenticated, settings.viewSettings);
+  app.post('/dashboard/:orgId/settings', isAuthenticated, settings.updateSettings);
+
+  // reservations
+  app.post('/u/:orgId/reservations/:eventId', reservations.updateReservation);
 
   // front end routes
   app.get('/u/:orgName', events.listFrontEventsView);

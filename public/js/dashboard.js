@@ -5,7 +5,7 @@ var validateEmail = function (email) {
 
 $(document).ready(function () {
 
-  $('body').on('click', '.event-images .event-image-thumb', function (e) {
+  $('body').on('click', '.event-images .event-image-thumb .th', function (e) {
     
     e.preventDefault();
     $(this).parent().children().each(function (el) {
@@ -13,5 +13,6 @@ $(document).ready(function () {
     });
     $(this).addClass('active-image');
 
-  })
+  });
+
 })

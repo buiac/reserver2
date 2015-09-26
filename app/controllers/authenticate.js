@@ -16,6 +16,11 @@ module.exports = function(config, db) {
     return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
   };
 
+  var validateEmail = function (email) {
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+  };
+
   // passport serializer
   passport.serializeUser(function(user, done) {
 
@@ -64,6 +69,9 @@ module.exports = function(config, db) {
           // set the user's local credentials
           newUser.username = username;
           newUser.password = createHash(password);
+
+          // validate user email
+          newUser.validEmail = validateEmail(newUser.username);
           
           // set calendar default name
           org.name = 'Guest';
@@ -125,7 +133,7 @@ module.exports = function(config, db) {
       passReqToCallback : true
     },
     function (req, username, password, done) {
-      db.users.findOne({'username': username}, function (err, user) {
+      db.users.findOne({username: username}, function (err, user) {
 
         if (err){
 
