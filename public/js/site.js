@@ -22,8 +22,6 @@ $(document).ready(function () {
     var mclistid = $this.find('.reserve-newsletter').val();
     var seatsLeft = parseInt($('#seats-left').html());
 
-    console.log(waiting);
-
     // send nothing if user does not check checkbox
     if (!$this.find('.reserve-newsletter')[0].checked) {
       mclistid = '';
@@ -34,7 +32,7 @@ $(document).ready(function () {
       
       $this.addClass('container-reserve-form--loading');
       
-      $.ajax(orgId + '/reservations/' + eventId, {
+      $.ajax('/u/' +orgId + '/reservations/' + eventId, {
         type: 'POST',
         data: {
           name: name,

@@ -145,8 +145,9 @@ module.exports = (function() {
   // reservations
   app.post('/u/:orgId/reservations/:eventId', reservations.updateReservation);
 
-  // front end routes
+  // front-end routes
   app.get('/u/:orgName', events.listFrontEventsView);
+  app.get('/u/:orgName/event/:eventId', events.frontEventView);
 
 
   // auth routes

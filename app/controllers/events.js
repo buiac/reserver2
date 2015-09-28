@@ -109,6 +109,38 @@ module.exports = function(config, db) {
     
   };
 
+  var frontEventView = function (req, res, next) {
+    db.orgs.findOne({
+      name: req.params.orgName
+    }, function (err, org) {
+      
+      if (err) {
+        res.send({ error: 'error'}, 400);
+        return
+      }
+
+      if (!org) {
+        res.redirect('/');
+        return
+      }
+
+      db.events.findOne({
+        _id: req.params.eventId
+      }).exec(function (err, event) {
+        
+        if(err) {
+          return res.send(err, 400);
+        }
+
+        res.render('event', {
+          event: event,
+          org: org
+        });
+
+      });
+    })
+  };
+
   var listFrontEventsView = function (req, res, next) {
 
       db.orgs.findOne({
@@ -453,6 +485,7 @@ module.exports = function(config, db) {
     updateEventView: updateEventView,
     updateEvent: updateEvent,
     listFrontEventsView: listFrontEventsView,
+    frontEventView: frontEventView,
     eventDeleteImage: eventDeleteImage
   };
 
